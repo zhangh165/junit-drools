@@ -3,6 +3,8 @@ package pl.maciejwalkowiak.drools;
 import org.junit.Test;
 import pl.maciejwalkowiak.drools.annotations.DroolsFiles;
 
+import java.util.List;
+
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -12,7 +14,9 @@ public class DroolsInjectorTest {
     public void should_throw_exception_for_null_class() throws Exception {
         catchException(new DroolsInjector()).initDrools(null);
 
-        assertThat(caughtException()).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("null");
+        assertThat((Exception)caughtException())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("null");
     }
 
     @Test
@@ -21,7 +25,7 @@ public class DroolsInjectorTest {
 
         catchException(new DroolsInjector()).initDrools(testClass);
 
-        assertThat(caughtException()).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("not found");
+        assertThat((Exception)caughtException()).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("not found");
     }
 
     @Test
@@ -30,7 +34,7 @@ public class DroolsInjectorTest {
 
         catchException(new DroolsInjector()).initDrools(testClass);
 
-        assertThat(caughtException()).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("not found");
+        assertThat((Exception)caughtException()).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("not found");
     }
 
     @Test
@@ -39,7 +43,7 @@ public class DroolsInjectorTest {
 
         catchException(new DroolsInjector()).initDrools(testClass);
 
-        assertThat(caughtException()).isInstanceOf(IllegalStateException.class).hasMessageContaining("errors in DRL files");
+        assertThat((Exception)caughtException()).isInstanceOf(IllegalStateException.class).hasMessageContaining("errors in DRL files");
     }
 
     @DroolsFiles(value = "foo.drl", location = "/")

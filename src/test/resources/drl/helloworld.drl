@@ -1,7 +1,7 @@
 import pl.maciejwalkowiak.drools.Purchase;
 
 rule "Discount"
-dialect "mvel"
+dialect "java"
 when
     p : Purchase(customer.age < 18)
 then

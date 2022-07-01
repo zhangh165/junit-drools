@@ -1,11 +1,9 @@
 package pl.maciejwalkowiak.drools;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.maciejwalkowiak.drools.annotations.DroolsFiles;
@@ -15,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 /**
- * Initializes Drools knowledge base and {@link StatefulSession} and injects them to test class
+ * Initializes Drools knowledge base and {@link KieSession} and injects them to test class
  *
  * @author Maciej Walkowiak
  */
@@ -33,27 +31,21 @@ public class DroolsInjector {
         DroolsFiles droolsFiles = annotationProcessor.getDroolsFiles();
 
         DroolsSession droolsSession = 
-          initKnowledgeBase(droolsFiles.location(), droolsFiles.dsl(), Arrays.asList(droolsFiles.value()));
+          initKnowledgeBase(droolsFiles.location(), Arrays.asList(droolsFiles.value()));
 
         annotationProcessor.setDroolsSession(droolsSession);
     }
 
-    private DroolsSession initKnowledgeBase(String droolsLocation, String dsl, Iterable<String> fileNames) throws Exception {
+    private DroolsSession initKnowledgeBase(String droolsLocation,
+                                            Iterable<String> fileNames) throws Exception {
 
-        PackageBuilder builder = new PackageBuilder();
+        KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
-        if(dsl == null || dsl.equals("")) {
-            LOG.info("Initializing knowledge base for drl files located in {} with names: {}", droolsLocation, fileNames);
-            for (String fileName : fileNames) {
-                builder.addPackageFromDrl(loadDroolFile(droolsLocation, fileName));
-            }
-        } else {
-            LOG.info("Initializing knowledge base for drl files located in {} with dsl {}  with names: {}", droolsLocation, dsl, fileNames);
-            for (String fileName : fileNames) {
-                builder.addPackageFromDrl(loadDroolFile(droolsLocation, fileName),
-                                          loadDroolFile(droolsLocation, dsl) );
-            }
+        LOG.info("Initializing knowledge base for drl files located in {} with names: {}", droolsLocation, fileNames);
+        for (String fileName : fileNames) {
+            builder.addPackageFromDrl(loadDroolFile(droolsLocation, fileName));
         }
+
         PackageBuilderErrors errors = builder.getErrors();
 
         // Make sure that there are no errors in knowledge base
@@ -67,10 +59,7 @@ public class DroolsInjector {
             throw new IllegalStateException("There are errors in DRL files");
         }
 
-        RuleBase ruleBase  = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(builder.getPackage());
-
-        StatefulSession session = ruleBase.newStatefulSession(false);
+        KieSession session = builder.newKieBase().newKieSession();
 
         return new DroolsSessionImpl(session);
     }
