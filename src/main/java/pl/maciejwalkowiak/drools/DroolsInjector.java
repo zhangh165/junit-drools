@@ -85,8 +85,8 @@ public class DroolsInjector {
     }
 
     private Resource loadDslFile(String droolLocation,String fileName){
-        Path dslFilePath = Paths.get(droolLocation+File.pathSeparator+fileName);
-        if(Files.exists(dslFilePath)){
+        Path dslFilePath = Paths.get(droolLocation+File.separator+fileName);
+        if(!Files.exists(dslFilePath)){
             throw new IllegalArgumentException("File not found in location: "+dslFilePath);
         }
 

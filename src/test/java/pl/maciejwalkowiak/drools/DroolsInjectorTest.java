@@ -51,7 +51,7 @@ public class DroolsInjectorTest {
 
     }
 
-    @DroolsFiles(value = "rules-with-errors.drl", location = "/", dsl = "foo.dsl")
+    @DroolsFiles(value = "rules-with-errors.drl", location = "/drl/", dsl = "foo.dsl")
     private static class NotExistingDslFileTestClass {
 
     }
