@@ -1,3 +1,6 @@
+
+> Fork from [junit-drools](https://github.com/maciejwalkowiak/junit-drools),do some upgrade,now can work well at drools 7.68.0.
+
 ## junit-drools 
 
 **Unfortunately due to the lack of time I am not able to continue developing and maintaining `junit-drools` project. Thank you for your contributions and support, I hope you will find one of the forks still maintained and helpful!**
